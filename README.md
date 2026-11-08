@@ -71,11 +71,16 @@ add_filter( 'kpb_defaults', function ( $d ) {
 
 ## به‌روزرسانی خودکار
 
-پلاگین خودش Release‌های همین مخزن را بررسی می‌کند (هر ۶ ساعت یک‌بار، با کش) و نسخه‌ی جدید را از طریق سیستم عادی به‌روزرسانی وردپرس نصب می‌کند:
+پلاگین فایل `info.json` را از هاست دانلود کارنیشا می‌خواند (هر ۶ ساعت یک‌بار، با کش) و نسخه‌ی جدید را از همان‌جا با سیستم عادی به‌روزرسانی وردپرس نصب می‌کند:
+
+```text
+https://cityseo.ir/cloud/karnisha/plugins/powerby/info.json
+https://cityseo.ir/cloud/karnisha/plugins/powerby/karnisha-powerby.zip
+```
 
 - **به‌روزرسانی خودکار به‌صورت پیش‌فرض روشن است**؛ وردپرس در پس‌زمینه (WP-Cron، معمولاً دو بار در روز) نسخه‌ی جدید را نصب می‌کند و پلاگین فعال می‌ماند.
 - در صفحه‌ی افزونه‌ها لینک **«بررسی به‌روزرسانی»** هست برای بررسی فوری.
-- حتی اگر هاست به WordPress.org دسترسی نداشته باشد، به‌روزرسانی از گیت‌هاب کار می‌کند.
+- حتی اگر هاست به WordPress.org یا گیت‌هاب دسترسی نداشته باشد، به‌روزرسانی کار می‌کند.
 
 تنظیمات اختیاری در `wp-config.php`:
 
@@ -83,18 +88,17 @@ add_filter( 'kpb_defaults', function ( $d ) {
 // خاموش کردن به‌روزرسانی خودکار در یک سایت (به‌روزرسانی دستی همچنان نمایش داده می‌شود)
 define( 'KPB_AUTO_UPDATE', false );
 
-// فقط اگر مخزن خصوصی باشد: توکن fine-grained با دسترسی فقط-خواندنی Contents به همین مخزن
-define( 'KPB_GITHUB_TOKEN', 'github_pat_...' );
+// استفاده از آدرس دیگری برای info.json
+define( 'KPB_UPDATE_URL', 'https://example.com/powerby/info.json' );
 ```
 
 ## انتشار نسخه‌ی جدید
 
-1. شماره نسخه را در `karnisha-powerby.php` (هدر `Version` و ثابت `KPB_VERSION`) و `readme.txt` (`Stable tag`) بالا ببرید و در `CHANGELOG.md` بنویسید.
-2. تگ بزنید و در گیت‌هاب Release بسازید (مثلاً `v1.0.1`).
-3. GitHub Actions خودش فایل `karnisha-powerby.zip` را می‌سازد و به Release اضافه می‌کند. اگر نسخه‌ی تگ با نسخه‌ی پلاگین یکی نباشد، ساخت متوقف می‌شود.
-4. همه‌ی سایت‌ها ظرف چند ساعت خودشان به‌روز می‌شوند.
-
-> نام فایل ZIP باید دقیقاً `karnisha-powerby.zip` باشد و Release نباید Draft یا Pre-release باشد.
+1. شماره نسخه را در `karnisha-powerby.php` (هدر `Version` و ثابت `KPB_VERSION`) و `readme.txt` (`Stable tag`) بالا ببرید و تغییرات را زیر عنوان `## x.y.z` در `CHANGELOG.md` بنویسید.
+2. در گیت‌هاب Release بسازید با تگ `vx.y.z` (مثلاً `v1.0.3`). اگر نسخه‌ی تگ با نسخه‌ی پلاگین یکی نباشد، ساخت متوقف می‌شود.
+3. GitHub Actions دو فایل `karnisha-powerby.zip` و `info.json` را می‌سازد و به Release اضافه می‌کند.
+4. هر دو فایل را دانلود کنید و در پوشه‌ی `cloud/karnisha/plugins/powerby/` هاست آپلود کنید (جایگزین فایل‌های قبلی). **اول ZIP، بعد info.json.**
+5. همه‌ی سایت‌ها ظرف چند ساعت خودشان به‌روز می‌شوند.
 
 ## نیازمندی‌ها
 

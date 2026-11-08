@@ -1,15 +1,16 @@
 <?php
 /**
- * Self-updater: checks GitHub Releases of karnishaco/karnisha-powerby and
- * hands new versions to WordPress' normal update system (Dashboard > Updates,
- * the Plugins screen and background auto-updates).
+ * Self-updater: reads a small JSON manifest (info.json) from Karnisha's
+ * download host and hands new versions to WordPress' normal update system
+ * (Dashboard > Updates, the Plugins screen and background auto-updates).
  *
- * Public repository: works with no configuration.
- * Private repository: define( 'KPB_GITHUB_TOKEN', 'github_pat_...' ); in wp-config.php
- * (a fine-grained token with read-only "Contents" access to this one repository).
+ * The host folder holds two files, both attached to every GitHub Release:
+ *   info.json             — version, download_url, changelog…
+ *   karnisha-powerby.zip  — the plugin
  *
- * Auto-updates are on by default for this plugin. To turn them off on a site:
- * define( 'KPB_AUTO_UPDATE', false ); in wp-config.php
+ * Optional, in wp-config.php:
+ *   define( 'KPB_UPDATE_URL', 'https://…/info.json' ); // use another manifest
+ *   define( 'KPB_AUTO_UPDATE', false );                // no background auto-updates on this site
  *
  * @package Karnisha_PowerBy
  */
@@ -18,11 +19,10 @@ defined( 'ABSPATH' ) || exit;
 
 final class KPB_Updater {
 
-	const REPO      = 'karnishaco/karnisha-powerby';
-	const SLUG      = 'karnisha-powerby';
-	const ASSET     = 'karnisha-powerby.zip';
-	const CACHE_KEY = 'kpb_github_release';
-	const CACHE_TTL = 6 * HOUR_IN_SECONDS;
+	const MANIFEST_URL = 'https://cityseo.ir/cloud/karnisha/plugins/powerby/info.json';
+	const SLUG         = 'karnisha-powerby';
+	const CACHE_KEY    = 'kpb_update_info';
+	const CACHE_TTL    = 6 * HOUR_IN_SECONDS;
 
 	/** @var string e.g. karnisha-powerby/karnisha-powerby.php */
 	private $basename;
@@ -36,8 +36,6 @@ final class KPB_Updater {
 		add_filter( 'site_transient_update_plugins', array( $this, 'inject_update' ) );
 		add_filter( 'plugins_api', array( $this, 'plugin_info' ), 20, 3 );
 		add_filter( 'auto_update_plugin', array( $this, 'auto_update' ), 10, 2 );
-		add_filter( 'upgrader_pre_download', array( $this, 'download_private_asset' ), 10, 3 );
-		add_filter( 'http_request_args', array( $this, 'github_auth' ), 10, 2 );
 		add_action( 'upgrader_process_complete', array( $this, 'purge_cache' ), 10, 2 );
 
 		// "Check for updates" link on the Plugins screen.
@@ -46,15 +44,15 @@ final class KPB_Updater {
 		add_action( 'admin_notices', array( $this, 'manual_check_notice' ) );
 	}
 
-	private function token(): string {
-		$token = defined( 'KPB_GITHUB_TOKEN' ) ? (string) KPB_GITHUB_TOKEN : '';
-		return (string) apply_filters( 'kpb_github_token', $token );
+	private function manifest_url(): string {
+		$url = defined( 'KPB_UPDATE_URL' ) ? (string) KPB_UPDATE_URL : self::MANIFEST_URL;
+		return (string) apply_filters( 'kpb_update_url', $url );
 	}
 
 	/**
-	 * Latest published release (cached). Returns null when unavailable.
+	 * Latest version info from the manifest (cached). Null when unavailable.
 	 */
-	public function get_release( bool $force = false ): ?array {
+	public function get_info( bool $force = false ): ?array {
 		if ( ! $force ) {
 			$cached = get_site_transient( self::CACHE_KEY );
 			if ( is_array( $cached ) ) {
@@ -62,60 +60,57 @@ final class KPB_Updater {
 			}
 		}
 
-		$response = wp_remote_get(
-			'https://api.github.com/repos/' . self::REPO . '/releases/latest',
-			array(
-				'timeout' => 10,
-				'headers' => array( 'Accept' => 'application/vnd.github+json' ),
-			)
-		);
+		// Hourly cache-buster so a CDN/browser cache on the host can't hide a new version for long.
+		$url      = add_query_arg( 't', (string) floor( time() / HOUR_IN_SECONDS ), $this->manifest_url() );
+		$response = wp_remote_get( $url, array( 'timeout' => 10 ) );
+		$code     = (int) wp_remote_retrieve_response_code( $response );
+		$body     = 200 === $code ? (string) wp_remote_retrieve_body( $response ) : '';
+		$body     = preg_replace( '/^\xEF\xBB\xBF/', '', $body ); // Strip a BOM added by some editors.
+		$data     = '' !== $body ? json_decode( $body, true ) : null;
 
-		$code = (int) wp_remote_retrieve_response_code( $response );
-		$data = 200 === $code ? json_decode( (string) wp_remote_retrieve_body( $response ), true ) : null;
-
-		if ( ! is_array( $data ) || empty( $data['tag_name'] ) ) {
-			// Remember the failure for a short while so we don't hammer GitHub.
+		if ( ! is_array( $data ) || empty( $data['version'] ) ) {
+			// Remember the failure for a short while so sites don't keep retrying.
 			set_site_transient( self::CACHE_KEY, array(), HOUR_IN_SECONDS );
 			return null;
 		}
 
-		$package = '';
-		foreach ( (array) ( $data['assets'] ?? array() ) as $asset ) {
-			if ( isset( $asset['name'] ) && self::ASSET === $asset['name'] ) {
-				// Private repos need the API URL (downloaded with the token), public ones the direct URL.
-				$package = '' !== $this->token() ? (string) $asset['url'] : (string) $asset['browser_download_url'];
-				break;
-			}
+		$package = (string) ( $data['download_url'] ?? '' );
+		if ( '' === $package ) {
+			$package = trailingslashit( dirname( $this->manifest_url() ) ) . self::SLUG . '.zip';
 		}
 
-		$release = array(
-			'version'   => ltrim( (string) $data['tag_name'], 'vV' ),
-			'package'   => $package,
-			'url'       => (string) ( $data['html_url'] ?? 'https://github.com/' . self::REPO ),
-			'changelog' => (string) ( $data['body'] ?? '' ),
-			'date'      => (string) ( $data['published_at'] ?? '' ),
+		$info = array(
+			'version'      => ltrim( (string) $data['version'], 'vV' ),
+			'package'      => esc_url_raw( $package ),
+			'changelog'    => (string) ( $data['changelog'] ?? '' ),
+			'date'         => (string) ( $data['last_updated'] ?? '' ),
+			'requires'     => (string) ( $data['requires'] ?? '5.8' ),
+			'requires_php' => (string) ( $data['requires_php'] ?? '7.4' ),
+			'tested'       => (string) ( $data['tested'] ?? '' ),
 		);
 
-		set_site_transient( self::CACHE_KEY, $release, self::CACHE_TTL );
-		return $release;
+		set_site_transient( self::CACHE_KEY, $info, self::CACHE_TTL );
+		return $info;
 	}
 
-	private function plugin_object( array $release ): object {
+	private function plugin_object( array $info, string $version ): object {
 		return (object) array(
-			'id'           => 'github.com/' . self::REPO,
+			'id'           => self::SLUG,
 			'slug'         => self::SLUG,
 			'plugin'       => $this->basename,
-			'new_version'  => $release['version'],
-			'url'          => 'https://github.com/' . self::REPO,
-			'package'      => $release['package'],
+			'new_version'  => $version,
+			'url'          => 'https://github.com/karnishaco/karnisha-powerby',
+			'package'      => $info['package'],
 			'icons'        => array( 'svg' => KPB_URL . 'assets/images/logo.svg' ),
-			'requires_php' => '7.4',
+			'requires'     => $info['requires'],
+			'requires_php' => $info['requires_php'],
+			'tested'       => $info['tested'],
 		);
 	}
 
 	public function inject_update( $transient ) {
-		$release = $this->get_release();
-		if ( ! $release ) {
+		$info = $this->get_info();
+		if ( ! $info ) {
 			return $transient;
 		}
 
@@ -129,13 +124,12 @@ final class KPB_Updater {
 			$transient->no_update = array();
 		}
 
-		if ( '' !== $release['package'] && version_compare( $release['version'], KPB_VERSION, '>' ) ) {
-			$transient->response[ $this->basename ] = $this->plugin_object( $release );
+		if ( '' !== $info['package'] && version_compare( $info['version'], KPB_VERSION, '>' ) ) {
+			$transient->response[ $this->basename ] = $this->plugin_object( $info, $info['version'] );
 			unset( $transient->no_update[ $this->basename ] );
 		} else {
 			// Listing it under no_update makes the "Enable auto-updates" toggle appear.
-			$current                                 = $this->plugin_object( array_merge( $release, array( 'version' => KPB_VERSION ) ) );
-			$transient->no_update[ $this->basename ] = $current;
+			$transient->no_update[ $this->basename ] = $this->plugin_object( $info, KPB_VERSION );
 			unset( $transient->response[ $this->basename ] );
 		}
 
@@ -148,24 +142,24 @@ final class KPB_Updater {
 			return $result;
 		}
 
-		$release = $this->get_release();
-		$version = $release ? $release['version'] : KPB_VERSION;
+		$info = $this->get_info();
 
 		return (object) array(
 			'name'          => 'Karnisha Power By',
 			'slug'          => self::SLUG,
-			'version'       => $version,
+			'version'       => $info ? $info['version'] : KPB_VERSION,
 			'author'        => 'Karnisha',
-			'homepage'      => 'https://github.com/' . self::REPO,
-			'requires'      => '5.8',
-			'requires_php'  => '7.4',
-			'last_updated'  => $release ? $release['date'] : '',
-			'download_link' => $release ? $release['package'] : '',
+			'homepage'      => 'https://github.com/karnishaco/karnisha-powerby',
+			'requires'      => $info ? $info['requires'] : '5.8',
+			'requires_php'  => $info ? $info['requires_php'] : '7.4',
+			'tested'        => $info ? $info['tested'] : '',
+			'last_updated'  => $info ? $info['date'] : '',
+			'download_link' => $info ? $info['package'] : '',
 			'sections'      => array(
 				'description' => esc_html__( 'Karnisha "designed & developed by" footer badge as an Elementor widget and a shortcode.', 'karnisha-powerby' ),
-				'changelog'   => $release && '' !== $release['changelog']
-					? wpautop( esc_html( $release['changelog'] ) )
-					: esc_html__( 'See the releases page on GitHub.', 'karnisha-powerby' ),
+				'changelog'   => $info && '' !== $info['changelog']
+					? wpautop( esc_html( $info['changelog'] ) )
+					: esc_html__( 'See CHANGELOG.md in the GitHub repository.', 'karnisha-powerby' ),
 			),
 		);
 	}
@@ -179,47 +173,6 @@ final class KPB_Updater {
 			return (bool) apply_filters( 'kpb_auto_update', true );
 		}
 		return $update;
-	}
-
-	/** Send the token with requests to this repository's API (private repos). */
-	public function github_auth( $args, $url ) {
-		$token = $this->token();
-		if ( '' === $token || 0 !== strpos( (string) $url, 'https://api.github.com/repos/' . self::REPO . '/' ) ) {
-			return $args;
-		}
-		$args['headers']                  = isset( $args['headers'] ) ? (array) $args['headers'] : array();
-		$args['headers']['Authorization'] = 'Bearer ' . $token;
-		return $args;
-	}
-
-	/**
-	 * Private repos: release assets come from the API URL, which redirects to a
-	 * signed download URL that must be fetched *without* the Authorization header.
-	 */
-	public function download_private_asset( $reply, $package, $upgrader ) {
-		$prefix = 'https://api.github.com/repos/' . self::REPO . '/releases/assets/';
-		if ( false !== $reply || 0 !== strpos( (string) $package, $prefix ) ) {
-			return $reply;
-		}
-
-		$response = wp_remote_get(
-			$package,
-			array(
-				'timeout'     => 30,
-				'redirection' => 0,
-				'headers'     => array( 'Accept' => 'application/octet-stream' ),
-			)
-		);
-		$location = wp_remote_retrieve_header( $response, 'location' );
-
-		if ( is_wp_error( $response ) || ! $location ) {
-			return new WP_Error( 'kpb_download_failed', __( 'Could not download the update from GitHub. Check KPB_GITHUB_TOKEN.', 'karnisha-powerby' ) );
-		}
-
-		if ( ! function_exists( 'download_url' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/file.php';
-		}
-		return download_url( is_array( $location ) ? end( $location ) : $location, 300 );
 	}
 
 	public function purge_cache( $upgrader, $options ): void {
@@ -244,13 +197,13 @@ final class KPB_Updater {
 		}
 		check_admin_referer( 'kpb_check_update' );
 
-		$release = $this->get_release( true );
+		$info = $this->get_info( true );
 		delete_site_transient( 'update_plugins' );
 		wp_update_plugins();
 
-		if ( ! $release ) {
+		if ( ! $info ) {
 			$status = 'error';
-		} elseif ( version_compare( $release['version'], KPB_VERSION, '>' ) ) {
+		} elseif ( version_compare( $info['version'], KPB_VERSION, '>' ) ) {
 			$status = 'available';
 		} else {
 			$status = 'latest';
@@ -269,7 +222,7 @@ final class KPB_Updater {
 		$messages = array(
 			'available' => array( 'warning', __( 'Karnisha Power By: a new version is available. Use the "update now" link below.', 'karnisha-powerby' ) ),
 			'latest'    => array( 'success', __( 'Karnisha Power By is up to date.', 'karnisha-powerby' ) ),
-			'error'     => array( 'error', __( 'Karnisha Power By: could not reach GitHub. Try again later.', 'karnisha-powerby' ) ),
+			'error'     => array( 'error', __( 'Karnisha Power By: could not reach the update server. Try again later.', 'karnisha-powerby' ) ),
 		);
 		if ( ! isset( $messages[ $status ] ) ) {
 			return;

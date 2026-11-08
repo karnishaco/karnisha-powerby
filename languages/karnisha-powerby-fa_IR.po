@@ -1,7 +1,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Karnisha Power By 1.0.0\n"
+"Project-Id-Version: Karnisha Power By 1.0.2\n"
 "Report-Msgid-Bugs-To: https://github.com/karnishaco/karnisha-powerby/issues\n"
 "Language: fa_IR\n"
 "MIME-Version: 1.0\n"
@@ -61,10 +61,6 @@ msgstr "کلیک"
 msgid "Content"
 msgstr "محتوا"
 
-msgid "Could not download the update from GitHub. Check KPB_GITHUB_TOKEN."
-msgstr ""
-"دانلود به‌روزرسانی از گیت‌هاب ممکن نشد. KPB_GITHUB_TOKEN را بررسی کنید."
-
 msgid "Distance from logo"
 msgstr "فاصله از لوگو"
 
@@ -103,9 +99,10 @@ msgstr ""
 "کارنیشا پاوربای: نسخه‌ی جدید موجود است. از لینک «به‌روزرسانی» زیر استفاده "
 "کنید."
 
-msgid "Karnisha Power By: could not reach GitHub. Try again later."
+msgid "Karnisha Power By: could not reach the update server. Try again later."
 msgstr ""
-"کارنیشا پاوربای: اتصال به گیت‌هاب برقرار نشد. بعداً دوباره امتحان کنید."
+"کارنیشا پاوربای: اتصال به سرور به‌روزرسانی برقرار نشد. بعداً دوباره امتحان "
+"کنید."
 
 msgid "Line 1"
 msgstr "خط اول"
@@ -139,8 +136,8 @@ msgstr "باز شدن باکس با"
 msgid "Padding"
 msgstr "فاصله داخلی"
 
-msgid "See the releases page on GitHub."
-msgstr "صفحه‌ی Releases در گیت‌هاب را ببینید."
+msgid "See CHANGELOG.md in the GitHub repository."
+msgstr "فایل CHANGELOG.md را در مخزن گیت‌هاب ببینید."
 
 msgid ""
 "Shows the Karnisha \"designed & developed by\" badge in site footers via an "

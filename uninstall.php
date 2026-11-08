@@ -7,4 +7,5 @@
 
 defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 
-delete_site_transient( 'kpb_github_release' );
+delete_site_transient( 'kpb_update_info' );
+delete_site_transient( 'kpb_github_release' ); // Used by 1.0.0–1.0.1.

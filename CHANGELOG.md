@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.2 — 2026-11-08
+
+- Updates now come from Karnisha's download host (cityseo.ir) instead of GitHub, fixing update timeouts on hosts with slow access to GitHub.
+- All texts, including the brand name, now use the site's default font (previously KalamehWeb).
+
 ## 1.0.1 — 2026-11-08
 
 - Box colours matched to the new logo: blue gradient background (#4f48ed → #0e21a2), yellow brand name (#ffbe1a), blue-tinted shadow.
