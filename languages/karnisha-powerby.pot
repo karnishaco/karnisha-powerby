@@ -1,0 +1,136 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Karnisha Power By 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/karnishaco/karnisha-powerby/issues\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: karnisha-powerby\n"
+
+msgid "Above logo"
+msgstr ""
+
+msgid "Background"
+msgstr ""
+
+msgid "Background blur"
+msgstr ""
+
+msgid "Behaviour"
+msgstr ""
+
+msgid "Below logo"
+msgstr ""
+
+msgid "Border radius"
+msgstr ""
+
+msgid "Box"
+msgstr ""
+
+msgid "Box alignment"
+msgstr ""
+
+msgid "Box position"
+msgstr ""
+
+msgid "Brand link (optional)"
+msgstr ""
+
+msgid "Brand name"
+msgstr ""
+
+msgid "Brand name color"
+msgstr ""
+
+msgid "Brand name typography"
+msgstr ""
+
+msgid "Center"
+msgstr ""
+
+msgid "Click"
+msgstr ""
+
+msgid "Content"
+msgstr ""
+
+msgid "Distance from logo"
+msgstr ""
+
+msgid "End"
+msgstr ""
+
+msgid "Hover (and click on touch)"
+msgstr ""
+
+msgid "Karnisha"
+msgstr ""
+
+msgid "Karnisha Power By"
+msgstr ""
+
+msgid ""
+"Karnisha Power By: Elementor is not active, so the widget is unavailable. "
+"You can still use the [karnisha_powerby] shortcode."
+msgstr ""
+
+msgid "Line 1"
+msgstr ""
+
+msgid "Line 2"
+msgstr ""
+
+msgid "Lines color"
+msgstr ""
+
+msgid "Lines typography"
+msgstr ""
+
+msgid "Logo"
+msgstr ""
+
+msgid "Logo alignment"
+msgstr ""
+
+msgid "Logo alt text"
+msgstr ""
+
+msgid ""
+"On small screens the box is shifted automatically so it never goes off-"
+"screen."
+msgstr ""
+
+msgid "Open box on"
+msgstr ""
+
+msgid "Padding"
+msgstr ""
+
+msgid ""
+"Shows the Karnisha \"designed & developed by\" badge in site footers via an "
+"Elementor widget or the [karnisha_powerby] shortcode. All assets are served "
+"locally."
+msgstr ""
+
+msgid "Size"
+msgstr ""
+
+msgid "Slogan"
+msgstr ""
+
+msgid "Slogan color"
+msgstr ""
+
+msgid "Slogan typography"
+msgstr ""
+
+msgid "Start"
+msgstr ""
+
+msgid "Texts"
+msgstr ""
+
+msgid "Width"
+msgstr ""

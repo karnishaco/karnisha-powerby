@@ -1,0 +1,175 @@
+/*! Karnisha Power By — https://github.com/karnishaco/karnisha-powerby */
+.krn__powerby {
+	--kpb-logo-size: 25px;
+	--kpb-box-width: 200px;
+	--kpb-gap: 12px;
+	--kpb-lift: 15px;
+	--kpb-bg: rgba(1, 146, 165, 0.73);
+	--kpb-shadow: 0 8px 32px 0 rgba(1, 146, 165, 0.3);
+	--kpb-blur: 15px;
+	--kpb-radius: 10px;
+	--kpb-text: #fff;
+	--kpb-name: #eb9b21;
+	display: flex;
+	line-height: 1.5;
+}
+
+.krn__powerby .karnisha {
+	position: relative;
+	display: inline-flex;
+}
+
+/* Toggle button — reset theme button styles (WoodMart & co.) */
+.krn__powerby .karnisha__toggle,
+.krn__powerby .karnisha__toggle:hover,
+.krn__powerby .karnisha__toggle:focus,
+.krn__powerby .karnisha__toggle:active {
+	-webkit-appearance: none;
+	appearance: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: auto;
+	height: auto;
+	min-width: 0;
+	min-height: 0;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: none;
+	box-shadow: none;
+	color: inherit;
+	line-height: 0;
+	cursor: pointer;
+	transform: none;
+}
+
+.krn__powerby .karnisha__toggle:focus:not(:focus-visible) {
+	outline: none;
+}
+
+.krn__powerby .karnisha__toggle:focus-visible {
+	outline: 2px solid var(--kpb-name);
+	outline-offset: 3px;
+}
+
+.krn__powerby .karnisha__logo {
+	display: block;
+	width: var(--kpb-logo-size);
+	height: var(--kpb-logo-size);
+	max-width: none;
+	object-fit: contain;
+}
+
+.krn__powerby .karnisha__logo--fallback {
+	border-radius: 50%;
+	background: var(--kpb-bg);
+	color: var(--kpb-name);
+	font-weight: 900;
+	font-size: calc(var(--kpb-logo-size) * 0.6);
+	line-height: var(--kpb-logo-size);
+	text-align: center;
+}
+
+/* Popup box */
+.krn__powerby .karnisha__power_box {
+	--kpb-x: -50%;
+	--kpb-y: 0px;
+	position: absolute;
+	z-index: 999;
+	bottom: calc(100% + var(--kpb-gap));
+	left: 50%;
+	box-sizing: border-box;
+	width: var(--kpb-box-width);
+	max-width: calc(100vw - 16px);
+	padding: 16px 12px;
+	/* Closed boxes take no space, so they never cause horizontal scroll on mobile. */
+	display: none;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	color: var(--kpb-text);
+	background: var(--kpb-bg);
+	box-shadow: var(--kpb-shadow);
+	-webkit-backdrop-filter: blur(var(--kpb-blur));
+	backdrop-filter: blur(var(--kpb-blur));
+	border-radius: var(--kpb-radius);
+	/* --kpb-shift is set by JS to keep the box inside the viewport. */
+	transform: translate(calc(var(--kpb-x) + var(--kpb-shift, 0px)), var(--kpb-y));
+}
+
+@keyframes kpb-in {
+	from {
+		opacity: 0;
+		transform: translate(calc(var(--kpb-x) + var(--kpb-shift, 0px)), 0);
+	}
+	to {
+		opacity: 1;
+		transform: translate(calc(var(--kpb-x) + var(--kpb-shift, 0px)), var(--kpb-y));
+	}
+}
+
+/* Open state (toggled by JS for both click and hover modes) */
+.krn__powerby .karnisha__power_box.active {
+	--kpb-y: calc(var(--kpb-lift) * -1);
+	display: flex;
+	animation: kpb-in 0.3s ease both;
+}
+
+/* Position: below logo */
+.krn__powerby.kpb--pos-bottom .karnisha__power_box {
+	bottom: auto;
+	top: calc(100% + var(--kpb-gap));
+}
+.krn__powerby.kpb--pos-bottom .karnisha__power_box.active {
+	--kpb-y: var(--kpb-lift);
+}
+
+/* Horizontal alignment (logical — follows RTL/LTR) */
+.krn__powerby.kpb--align-start .karnisha__power_box,
+.krn__powerby.kpb--align-end .karnisha__power_box {
+	--kpb-x: 0px;
+	left: auto;
+	right: auto;
+}
+.krn__powerby.kpb--align-start .karnisha__power_box {
+	inset-inline-start: 0;
+}
+.krn__powerby.kpb--align-end .karnisha__power_box {
+	inset-inline-end: 0;
+}
+
+/* Texts */
+.krn__powerby .karnisha__power_text {
+	text-align: center;
+	font-size: 16px;
+	color: var(--kpb-text);
+}
+.krn__powerby .karnisha__power_text p {
+	margin: 0;
+	color: inherit;
+}
+.krn__powerby .karnisha__name {
+	font-family: "KalamehWeb_Black", "KalamehWeb", Tahoma, sans-serif;
+	font-weight: 900;
+	font-size: 27px;
+	line-height: 1.4;
+	color: var(--kpb-name);
+}
+.krn__powerby .karnisha__name a,
+.krn__powerby .karnisha__name a:hover {
+	color: inherit;
+	text-decoration: none;
+}
+.krn__powerby .karnisha__slogan {
+	margin-top: 10px;
+	color: var(--kpb-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.krn__powerby .karnisha__power_box {
+		animation: none !important;
+	}
+}

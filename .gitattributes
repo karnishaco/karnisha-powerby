@@ -1,0 +1,12 @@
+* text=auto eol=lf
+*.mo binary
+*.webp binary
+*.png binary
+
+# Excluded from the release ZIP (git archive)
+/.github        export-ignore
+/.gitattributes export-ignore
+/.gitignore     export-ignore
+/README.md      export-ignore
+/CHANGELOG.md   export-ignore
+/assets/images/.gitkeep export-ignore

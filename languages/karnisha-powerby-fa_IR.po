@@ -1,0 +1,142 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Karnisha Power By 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/karnishaco/karnisha-powerby/issues\n"
+"Language: fa_IR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Domain: karnisha-powerby\n"
+
+msgid "Above logo"
+msgstr "بالای لوگو"
+
+msgid "Background"
+msgstr "پس‌زمینه"
+
+msgid "Background blur"
+msgstr "محوی پس‌زمینه"
+
+msgid "Behaviour"
+msgstr "رفتار"
+
+msgid "Below logo"
+msgstr "پایین لوگو"
+
+msgid "Border radius"
+msgstr "گردی گوشه‌ها"
+
+msgid "Box"
+msgstr "باکس"
+
+msgid "Box alignment"
+msgstr "تراز باکس"
+
+msgid "Box position"
+msgstr "موقعیت باکس"
+
+msgid "Brand link (optional)"
+msgstr "لینک برند (اختیاری)"
+
+msgid "Brand name"
+msgstr "نام برند"
+
+msgid "Brand name color"
+msgstr "رنگ نام برند"
+
+msgid "Brand name typography"
+msgstr "تایپوگرافی نام برند"
+
+msgid "Center"
+msgstr "وسط"
+
+msgid "Click"
+msgstr "کلیک"
+
+msgid "Content"
+msgstr "محتوا"
+
+msgid "Distance from logo"
+msgstr "فاصله از لوگو"
+
+msgid "End"
+msgstr "انتها"
+
+msgid "Hover (and click on touch)"
+msgstr "هاور (و لمس در موبایل)"
+
+msgid "Karnisha"
+msgstr "کارنیشا"
+
+msgid "Karnisha Power By"
+msgstr "کارنیشا پاوربای"
+
+msgid ""
+"Karnisha Power By: Elementor is not active, so the widget is unavailable. "
+"You can still use the [karnisha_powerby] shortcode."
+msgstr ""
+"کارنیشا پاوربای: المنتور فعال نیست، پس ویجت در دسترس نیست. همچنان می‌توانید "
+"از شورت‌کد [karnisha_powerby] استفاده کنید."
+
+msgid "Line 1"
+msgstr "خط اول"
+
+msgid "Line 2"
+msgstr "خط دوم"
+
+msgid "Lines color"
+msgstr "رنگ خطوط"
+
+msgid "Lines typography"
+msgstr "تایپوگرافی خطوط"
+
+msgid "Logo"
+msgstr "لوگو"
+
+msgid "Logo alignment"
+msgstr "تراز لوگو"
+
+msgid "Logo alt text"
+msgstr "متن جایگزین لوگو"
+
+msgid ""
+"On small screens the box is shifted automatically so it never goes off-"
+"screen."
+msgstr "در صفحه‌های کوچک، باکس خودکار جابه‌جا می‌شود تا از صفحه بیرون نزند."
+
+msgid "Open box on"
+msgstr "باز شدن باکس با"
+
+msgid "Padding"
+msgstr "فاصله داخلی"
+
+msgid ""
+"Shows the Karnisha \"designed & developed by\" badge in site footers via an "
+"Elementor widget or the [karnisha_powerby] shortcode. All assets are served "
+"locally."
+msgstr ""
+"نمایش نشان «طراحی و توسعه توسط کارنیشا» در فوتر سایت‌ها با ویجت المنتور یا "
+"شورت‌کد [karnisha_powerby]. همه فایل‌ها از خود سایت لود می‌شوند."
+
+msgid "Size"
+msgstr "اندازه"
+
+msgid "Slogan"
+msgstr "شعار"
+
+msgid "Slogan color"
+msgstr "رنگ شعار"
+
+msgid "Slogan typography"
+msgstr "تایپوگرافی شعار"
+
+msgid "Start"
+msgstr "ابتدا"
+
+msgid "Texts"
+msgstr "متن‌ها"
+
+msgid "Width"
+msgstr "عرض"
