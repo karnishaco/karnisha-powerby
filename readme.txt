@@ -19,6 +19,7 @@ Shows the Karnisha logo in the footer; clicking (or hovering) it opens a small b
 * Click or hover trigger, top/bottom position, start/center/end alignment (RTL aware)
 * Box is kept inside the viewport on small screens and never causes horizontal scroll
 * Keyboard accessible, closes on outside click or Esc, multiple badges per page
+* Updates itself from GitHub Releases (auto-update on by default; define KPB_AUTO_UPDATE false to opt out)
 
 == Installation ==
 

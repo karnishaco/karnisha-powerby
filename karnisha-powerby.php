@@ -24,5 +24,7 @@ define( 'KPB_PATH', plugin_dir_path( __FILE__ ) );
 define( 'KPB_URL', plugin_dir_url( __FILE__ ) );
 
 require_once KPB_PATH . 'includes/class-kpb-plugin.php';
+require_once KPB_PATH . 'includes/class-kpb-updater.php';
 
 KPB_Plugin::instance();
+new KPB_Updater( KPB_FILE );

@@ -47,10 +47,6 @@ class KPB_Elementor_Widget extends Widget_Base {
 		return false;
 	}
 
-	protected function is_dynamic_content(): bool {
-		return false;
-	}
-
 	protected function register_controls(): void {
 		$d     = KPB_Plugin::defaults();
 		$start = is_rtl() ? 'right' : 'left';

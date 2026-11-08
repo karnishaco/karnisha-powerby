@@ -50,10 +50,16 @@ msgstr ""
 msgid "Center"
 msgstr ""
 
+msgid "Check for updates"
+msgstr ""
+
 msgid "Click"
 msgstr ""
 
 msgid "Content"
+msgstr ""
+
+msgid "Could not download the update from GitHub. Check KPB_GITHUB_TOKEN."
 msgstr ""
 
 msgid "Distance from logo"
@@ -68,12 +74,28 @@ msgstr ""
 msgid "Karnisha"
 msgstr ""
 
+msgid ""
+"Karnisha \"designed & developed by\" footer badge as an Elementor widget and"
+" a shortcode."
+msgstr ""
+
 msgid "Karnisha Power By"
+msgstr ""
+
+msgid "Karnisha Power By is up to date."
 msgstr ""
 
 msgid ""
 "Karnisha Power By: Elementor is not active, so the widget is unavailable. "
 "You can still use the [karnisha_powerby] shortcode."
+msgstr ""
+
+msgid ""
+"Karnisha Power By: a new version is available. Use the \"update now\" link "
+"below."
+msgstr ""
+
+msgid "Karnisha Power By: could not reach GitHub. Try again later."
 msgstr ""
 
 msgid "Line 1"
@@ -106,6 +128,9 @@ msgid "Open box on"
 msgstr ""
 
 msgid "Padding"
+msgstr ""
+
+msgid "See the releases page on GitHub."
 msgstr ""
 
 msgid ""

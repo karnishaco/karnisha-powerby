@@ -79,7 +79,7 @@ final class KPB_Plugin {
 	 * URL of the bundled logo, or empty string when the file is missing.
 	 */
 	public static function default_logo_url(): string {
-		foreach ( array( 'logo.webp', 'logo.png', 'logo.svg' ) as $file ) {
+		foreach ( array( 'logo.svg', 'logo.webp', 'logo.png' ) as $file ) {
 			if ( file_exists( KPB_PATH . 'assets/images/' . $file ) ) {
 				return KPB_URL . 'assets/images/' . $file;
 			}

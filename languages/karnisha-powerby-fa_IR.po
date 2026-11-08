@@ -52,11 +52,18 @@ msgstr "تایپوگرافی نام برند"
 msgid "Center"
 msgstr "وسط"
 
+msgid "Check for updates"
+msgstr "بررسی به‌روزرسانی"
+
 msgid "Click"
 msgstr "کلیک"
 
 msgid "Content"
 msgstr "محتوا"
+
+msgid "Could not download the update from GitHub. Check KPB_GITHUB_TOKEN."
+msgstr ""
+"دانلود به‌روزرسانی از گیت‌هاب ممکن نشد. KPB_GITHUB_TOKEN را بررسی کنید."
 
 msgid "Distance from logo"
 msgstr "فاصله از لوگو"
@@ -70,8 +77,17 @@ msgstr "هاور (و لمس در موبایل)"
 msgid "Karnisha"
 msgstr "کارنیشا"
 
+msgid ""
+"Karnisha \"designed & developed by\" footer badge as an Elementor widget and"
+" a shortcode."
+msgstr ""
+"نشان «طراحی و توسعه توسط کارنیشا» برای فوتر، به‌صورت ویجت المنتور و شورت‌کد."
+
 msgid "Karnisha Power By"
 msgstr "کارنیشا پاوربای"
+
+msgid "Karnisha Power By is up to date."
+msgstr "کارنیشا پاوربای به‌روز است."
 
 msgid ""
 "Karnisha Power By: Elementor is not active, so the widget is unavailable. "
@@ -79,6 +95,17 @@ msgid ""
 msgstr ""
 "کارنیشا پاوربای: المنتور فعال نیست، پس ویجت در دسترس نیست. همچنان می‌توانید "
 "از شورت‌کد [karnisha_powerby] استفاده کنید."
+
+msgid ""
+"Karnisha Power By: a new version is available. Use the \"update now\" link "
+"below."
+msgstr ""
+"کارنیشا پاوربای: نسخه‌ی جدید موجود است. از لینک «به‌روزرسانی» زیر استفاده "
+"کنید."
+
+msgid "Karnisha Power By: could not reach GitHub. Try again later."
+msgstr ""
+"کارنیشا پاوربای: اتصال به گیت‌هاب برقرار نشد. بعداً دوباره امتحان کنید."
 
 msgid "Line 1"
 msgstr "خط اول"
@@ -111,6 +138,9 @@ msgstr "باز شدن باکس با"
 
 msgid "Padding"
 msgstr "فاصله داخلی"
+
+msgid "See the releases page on GitHub."
+msgstr "صفحه‌ی Releases در گیت‌هاب را ببینید."
 
 msgid ""
 "Shows the Karnisha \"designed & developed by\" badge in site footers via an "
