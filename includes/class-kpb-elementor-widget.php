@@ -126,6 +126,7 @@ class KPB_Elementor_Widget extends Widget_Base {
 				'default'     => array(
 					'url'         => $d['link'],
 					'is_external' => true,
+					'nofollow'    => true,
 				),
 				'separator'   => 'before',
 			)
@@ -416,6 +417,7 @@ class KPB_Elementor_Widget extends Widget_Base {
 				'slogan'   => (string) ( $s['slogan'] ?? '' ),
 				'link'     => (string) ( $s['link']['url'] ?? '' ),
 				'new_tab'  => ! empty( $s['link']['is_external'] ),
+				'nofollow' => ! empty( $s['link']['nofollow'] ),
 				'trigger'  => (string) ( $s['trigger'] ?? 'click' ),
 				'position' => (string) ( $s['position'] ?? 'top' ),
 				'align'    => (string) ( $s['align'] ?? 'center' ),

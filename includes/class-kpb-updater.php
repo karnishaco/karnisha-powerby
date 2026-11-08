@@ -5,8 +5,13 @@
  * (Dashboard > Updates, the Plugins screen and background auto-updates).
  *
  * The host folder holds two files, both attached to every GitHub Release:
- *   info.json             — version, download_url, changelog…
+ *   info.json             — version, download_url, changelog, signature…
  *   karnisha-powerby.zip  — the plugin
+ *
+ * Every ZIP is signed (Ed25519) by GitHub Actions with the private key kept in
+ * the repository secret KPB_SIGNING_KEY. Before installing, the plugin checks
+ * the signature against PUBLIC_KEY below and refuses anything that doesn't
+ * match — so a compromised download host cannot push code to client sites.
  *
  * Optional, in wp-config.php:
  *   define( 'KPB_UPDATE_URL', 'https://…/info.json' ); // use another manifest
@@ -24,6 +29,9 @@ final class KPB_Updater {
 	const CACHE_KEY    = 'kpb_update_info';
 	const CACHE_TTL    = 6 * HOUR_IN_SECONDS;
 
+	/** Ed25519 public key (base64) matching the KPB_SIGNING_KEY secret on GitHub. */
+	const PUBLIC_KEY = 'SpOemQfwWwUyfEN7Y8fDNXC6IfNNNBeAcvXKQYpp+qw=';
+
 	/** @var string e.g. karnisha-powerby/karnisha-powerby.php */
 	private $basename;
 
@@ -36,6 +44,7 @@ final class KPB_Updater {
 		add_filter( 'site_transient_update_plugins', array( $this, 'inject_update' ) );
 		add_filter( 'plugins_api', array( $this, 'plugin_info' ), 20, 3 );
 		add_filter( 'auto_update_plugin', array( $this, 'auto_update' ), 10, 2 );
+		add_filter( 'upgrader_pre_download', array( $this, 'download_and_verify' ), 10, 3 );
 		add_action( 'upgrader_process_complete', array( $this, 'purge_cache' ), 10, 2 );
 
 		// "Check for updates" link on the Plugins screen.
@@ -87,6 +96,7 @@ final class KPB_Updater {
 			'requires'     => (string) ( $data['requires'] ?? '5.8' ),
 			'requires_php' => (string) ( $data['requires_php'] ?? '7.4' ),
 			'tested'       => (string) ( $data['tested'] ?? '' ),
+			'signature'    => (string) ( $data['signature'] ?? '' ),
 		);
 
 		set_site_transient( self::CACHE_KEY, $info, self::CACHE_TTL );
@@ -124,7 +134,7 @@ final class KPB_Updater {
 			$transient->no_update = array();
 		}
 
-		if ( '' !== $info['package'] && version_compare( $info['version'], KPB_VERSION, '>' ) ) {
+		if ( '' !== $info['package'] && '' !== $info['signature'] && version_compare( $info['version'], KPB_VERSION, '>' ) ) {
 			$transient->response[ $this->basename ] = $this->plugin_object( $info, $info['version'] );
 			unset( $transient->no_update[ $this->basename ] );
 		} else {
@@ -175,6 +185,56 @@ final class KPB_Updater {
 		return $update;
 	}
 
+	/**
+	 * Download our package ourselves and install it only if its signature is valid.
+	 */
+	public function download_and_verify( $reply, $package, $upgrader ) {
+		if ( false !== $reply ) {
+			return $reply;
+		}
+		$info = $this->get_info();
+		if ( ! $info || '' === $info['package'] || $package !== $info['package'] ) {
+			return $reply; // Not our package.
+		}
+
+		if ( ! function_exists( 'download_url' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+		}
+		$file = download_url( $package, 300 );
+		if ( is_wp_error( $file ) ) {
+			return $file;
+		}
+
+		if ( ! self::verify_file( $file, $info['signature'] ) ) {
+			wp_delete_file( $file );
+			delete_site_transient( self::CACHE_KEY );
+			return new WP_Error(
+				'kpb_bad_signature',
+				__( 'Karnisha Power By: the update file\'s signature is missing or invalid, so it was not installed.', 'karnisha-powerby' )
+			);
+		}
+
+		return $file;
+	}
+
+	/** True when $signature (base64) is a valid Ed25519 signature of the file. */
+	public static function verify_file( string $file, string $signature ): bool {
+		$sig = base64_decode( $signature, true );
+		$key = base64_decode( self::PUBLIC_KEY, true );
+		if ( false === $sig || false === $key || 64 !== strlen( $sig ) || ! function_exists( 'sodium_crypto_sign_verify_detached' ) ) {
+			return false;
+		}
+		$data = file_get_contents( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		if ( false === $data ) {
+			return false;
+		}
+		try {
+			return sodium_crypto_sign_verify_detached( $sig, $data, $key );
+		} catch ( \Throwable $e ) {
+			return false;
+		}
+	}
+
 	public function purge_cache( $upgrader, $options ): void {
 		if ( isset( $options['type'] ) && 'plugin' === $options['type'] ) {
 			delete_site_transient( self::CACHE_KEY );
@@ -204,7 +264,7 @@ final class KPB_Updater {
 		if ( ! $info ) {
 			$status = 'error';
 		} elseif ( version_compare( $info['version'], KPB_VERSION, '>' ) ) {
-			$status = 'available';
+			$status = '' !== $info['signature'] ? 'available' : 'unsigned';
 		} else {
 			$status = 'latest';
 		}
@@ -222,6 +282,7 @@ final class KPB_Updater {
 		$messages = array(
 			'available' => array( 'warning', __( 'Karnisha Power By: a new version is available. Use the "update now" link below.', 'karnisha-powerby' ) ),
 			'latest'    => array( 'success', __( 'Karnisha Power By is up to date.', 'karnisha-powerby' ) ),
+			'unsigned'  => array( 'error', __( 'Karnisha Power By: a new version exists on the update server, but its info.json has no signature, so it will not be installed.', 'karnisha-powerby' ) ),
 			'error'     => array( 'error', __( 'Karnisha Power By: could not reach the update server. Try again later.', 'karnisha-powerby' ) ),
 		);
 		if ( ! isset( $messages[ $status ] ) ) {

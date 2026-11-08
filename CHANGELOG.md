@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.3 — 2026-11-08
+
+- Update packages are signed (Ed25519) by GitHub Actions and verified before installing; unsigned or tampered files are refused.
+- Brand link gets `rel="nofollow"` by default (Elementor link option and `nofollow` shortcode attribute).
+
 ## 1.0.2 — 2026-11-08
 
 - Updates now come from Karnisha's download host (cityseo.ir) instead of GitHub, fixing update timeouts on hosts with slow access to GitHub.

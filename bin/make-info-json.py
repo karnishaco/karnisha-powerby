@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build info.json (the update manifest) from the plugin header and CHANGELOG.md.
 
-Usage: python3 bin/make-info-json.py <output-path>
+Usage: python3 bin/make-info-json.py <output-path> [<signature-file>]
 """
 import datetime, json, re, sys
 from pathlib import Path
@@ -33,5 +33,7 @@ info = {
     "last_updated": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
     "changelog": changelog,
 }
+if len(sys.argv) > 2:
+    info["signature"] = Path(sys.argv[2]).read_text(encoding="utf-8").strip()
 Path(sys.argv[1]).write_text(json.dumps(info, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 print(json.dumps(info, ensure_ascii=False, indent=2))

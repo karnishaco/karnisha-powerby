@@ -4,7 +4,7 @@ Tags: footer, credit, elementor, badge
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,10 @@ Shows the Karnisha logo in the footer; clicking (or hovering) it opens a small b
 2. Add the "Karnisha Power By" widget to your footer, or use `[karnisha_powerby]`.
 
 == Changelog ==
+
+= 1.0.3 =
+* Updates are signed (Ed25519) and verified before installing.
+* Brand link gets rel="nofollow" by default.
 
 = 1.0.2 =
 * Updates now come from Karnisha's download host instead of GitHub (fixes update timeouts).

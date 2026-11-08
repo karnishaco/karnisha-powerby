@@ -103,6 +103,7 @@ final class KPB_Plugin {
 				'slogan'   => 'کارنیشا، همیشه با شما',
 				'link'     => '',
 				'new_tab'  => true,
+				'nofollow' => true,     // Sitewide footer credit links should not pass SEO weight.
 				'trigger'  => 'click',  // click | hover
 				'position' => 'top',    // top | bottom
 				'align'    => 'center', // start | center | end
@@ -127,6 +128,14 @@ final class KPB_Plugin {
 		$size     = max( 8, min( 200, (int) $a['size'] ) );
 		$box_id   = wp_unique_id( 'kpb-box-' );
 		$link     = esc_url( (string) $a['link'] );
+		$rel      = array();
+		if ( $a['nofollow'] ) {
+			$rel[] = 'nofollow';
+		}
+		if ( $a['new_tab'] ) {
+			$rel[] = 'noopener';
+		}
+		$link_attrs = ( $a['new_tab'] ? ' target="_blank"' : '' ) . ( $rel ? ' rel="' . esc_attr( implode( ' ', $rel ) ) . '"' : '' );
 
 		$classes = array(
 			'krn__powerby',
@@ -164,7 +173,7 @@ final class KPB_Plugin {
 						<?php if ( '' !== $a['name'] ) : ?>
 							<div class="karnisha__name">
 								<?php if ( '' !== $link ) : ?>
-									<a href="<?php echo $link; // Already escaped with esc_url(). ?>"<?php echo $a['new_tab'] ? ' target="_blank" rel="noopener"' : ''; ?>><?php echo esc_html( $a['name'] ); ?></a>
+									<a href="<?php echo $link; // Already escaped with esc_url(). ?>"<?php echo $link_attrs; // Built from fixed strings above. ?>><?php echo esc_html( $a['name'] ); ?></a>
 								<?php else : ?>
 									<?php echo esc_html( $a['name'] ); ?>
 								<?php endif; ?>
@@ -193,8 +202,10 @@ final class KPB_Plugin {
 		$defaults = self::defaults();
 		$atts     = shortcode_atts( $defaults, (array) $atts, self::SHORTCODE );
 
-		if ( is_string( $atts['new_tab'] ) ) {
-			$atts['new_tab'] = ! in_array( strtolower( $atts['new_tab'] ), array( '0', 'false', 'no', '' ), true );
+		foreach ( array( 'new_tab', 'nofollow' ) as $flag ) {
+			if ( is_string( $atts[ $flag ] ) ) {
+				$atts[ $flag ] = ! in_array( strtolower( $atts[ $flag ] ), array( '0', 'false', 'no', '' ), true );
+			}
 		}
 		$atts['inline_size'] = true;
 

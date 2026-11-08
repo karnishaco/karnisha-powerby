@@ -30,10 +30,20 @@ jobs:
       - name: PHP syntax check
         run: find . -name '*.php' -not -path './.git/*' -print0 | xargs -0 -n1 php -l
 
-      - name: Build ZIP and info.json
+      - name: Build ZIP
+        run: git archive --format=zip --prefix=karnisha-powerby/ -o karnisha-powerby.zip HEAD
+
+      - name: Sign ZIP and build info.json
+        env:
+          KPB_SIGNING_KEY: ${{ secrets.KPB_SIGNING_KEY }}
         run: |
-          git archive --format=zip --prefix=karnisha-powerby/ -o karnisha-powerby.zip HEAD
-          python3 bin/make-info-json.py info.json
+          if [ -z "$KPB_SIGNING_KEY" ]; then
+            echo "::error::Repository secret KPB_SIGNING_KEY is not set (Settings > Secrets and variables > Actions)."
+            exit 1
+          fi
+          php bin/sign.php sign karnisha-powerby.zip > karnisha-powerby.zip.sig
+          php bin/sign.php verify karnisha-powerby.zip karnisha-powerby.zip.sig
+          python3 bin/make-info-json.py info.json karnisha-powerby.zip.sig
 
       - name: Attach files to release
         if: github.event_name == 'release'
