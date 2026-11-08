@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1 — 2026-11-08
+
+- Box colours matched to the new logo: blue gradient background (#4f48ed → #0e21a2), yellow brand name (#ffbe1a), blue-tinted shadow.
+- Slogan set to 14px so it fits on one line.
+
 ## 1.0.0 — 2026-11-08
 
 - First release: the footer badge previously loaded from an external host is now a self-contained plugin.

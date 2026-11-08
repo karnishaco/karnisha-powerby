@@ -4,7 +4,7 @@ Tags: footer, credit, elementor, badge
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,9 @@ Shows the Karnisha logo in the footer; clicking (or hovering) it opens a small b
 2. Add the "Karnisha Power By" widget to your footer, or use `[karnisha_powerby]`.
 
 == Changelog ==
+
+= 1.0.1 =
+* Box colours matched to the new Karnisha logo (blue gradient, yellow brand name); slogan sized to fit on one line.
 
 = 1.0.0 =
 * First release: converted the externally hosted badge into a self-contained plugin.

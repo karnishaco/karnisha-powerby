@@ -3,7 +3,7 @@
  * Plugin Name:       Karnisha Power By
  * Plugin URI:        https://github.com/karnishaco/karnisha-powerby
  * Description:       Shows the Karnisha "designed & developed by" badge in site footers via an Elementor widget or the [karnisha_powerby] shortcode. All assets are served locally.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Karnisha
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'KPB_VERSION', '1.0.0' );
+define( 'KPB_VERSION', '1.0.1' );
 define( 'KPB_FILE', __FILE__ );
 define( 'KPB_PATH', plugin_dir_path( __FILE__ ) );
 define( 'KPB_URL', plugin_dir_url( __FILE__ ) );
